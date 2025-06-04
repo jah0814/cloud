@@ -33,15 +33,22 @@ h1, h2 {
     background-color: #0d3b66;
     padding: 20px;
     border-radius: 12px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
-    transition: background 0.3s;
 }
 
 .dark-mode .top-panel {
     background-color: #161b22;
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+.centered-heading {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .top-panel h1 {
@@ -56,6 +63,12 @@ h1, h2 {
 .top-panel h1:hover {
     text-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff;
 }
+.top-panel-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 
 /* ===== End of top panel styles ===== */
 
@@ -89,20 +102,18 @@ h1, h2 {
 }
 
 #darkModeToggle {
-    margin-left: 10px;
-    padding: 10px 12px;
-    background-color: #0d3b66;
+     background-color: transparent; 
     color: white;
     border: none;
     border-radius: 50%;
     font-size: 20px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-    box-shadow: 0 0 8px rgba(13, 59, 102, 0.6);
+    transition: transform 0.2s, box-shadow 0.3s;
+    box-shadow: none;
+    margin-left: auto;
 }
 
 #darkModeToggle:hover {
-    background-color: #074173;
     transform: scale(1.1);
     box-shadow: 0 0 12px #58a6ff, 0 0 20px #58a6ff;
 }
@@ -354,17 +365,39 @@ th {
 .dark-mode .error-message {
     color: #f85149;
 }
+#refreshButton {
+    margin-left: 10px;
+    padding: 10px 12px;
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 8px rgba(13, 59, 102, 0.6);
+}
+
+#refreshButton:hover {
+    background-color: #145da0;
+    box-shadow: 0 0 12px #58a6ff, 0 0 20px #58a6ff;
+}
+
 
   </style>
 </head>
 <body>
-  <div class="top-panel">
-  <h1>CLOUD UNIVERSITY</h1>
+ <div class="top-panel">
+  <div class="centered-heading">
+    <h1>CLOUD UNIVERSITY</h1>
   </div>
+  <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+</div>
+
 
   <div class="search-toggle-group">
     <input type="text" id="search" placeholder="Search" />
-    <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    <button id="refreshButton" title="Refresh Page">Refresh</button>
   </div>
 
   <!-- Loading overlay -->
@@ -729,6 +762,9 @@ th {
 
     // Initialize the app
     fetchStudents();
+    document.getElementById("refreshButton").addEventListener("click", async () => {
+  await fetchStudents(); // Just re-fetch the student list from Firestore
+});
   </script>
 </body>
 </html>
