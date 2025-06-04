@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e6ecf4;
+      color: #1e2a38;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background: #0d1117;
+      color: #c9d1d9;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #0d3b66;
+    }
+
+    .dark-mode h1,
+    .dark-mode h2 {
+      color: #58a6ff;
+    }
+
+    .search-toggle-group {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    #search {
+      width: 200px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #99aabb;
+      transition: width 0.3s ease;
+      background: white;
+      color: #1e2a38;
+    }
+
+    #search:focus {
+      width: 300px;
+      border-color: #0d3b66;
+      outline: none;
+    }
+
+    .dark-mode #search {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: white;
+    }
+
+    #darkModeToggle {
+      margin-left: 10px;
+      padding: 10px 12px;
+      background-color: #0d3b66;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #darkModeToggle:hover {
+      background-color: #074173;
+      transform: scale(1.1);
+    }
+
+    .container-flex {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      align-items: flex-start;
+    }
+
+    .left-panel, .right-panel {
+      background: #f9fbff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .left-panel {
+      flex: 1;
+    }
+
+    .right-panel {
+      flex: 2;
+    }
+
+    .dark-mode .left-panel,
+    .dark-mode .right-panel {
+      background-color: #161b22;
+      box-shadow: none;
+    }
+
+    .socket {
+      position: relative;
+      inset: 0;
+      background: linear-gradient(135deg, hsl(210, 40%, 90%), hsl(210, 40%, 30%));
+      box-shadow: -0.05em 0.1em 0.2em -0.2em white;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .socket-shadow {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      border-radius: inherit;
+      box-shadow: 0em 0.075em 0.1em 0em white;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .socket:hover .socket-shadow {
+      opacity: 0.3;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input, button, select {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #0d3b66;
+      outline: none;
+    }
+
+    .dark-mode input, .dark-mode select {
+      background-color: #0d1117;
+      color: #c9d1d9;
+      border-color: #444c56;
+    }
+
+    button {
+      background: #0d3b66;
+      color: white;
+      border: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    button:hover {
+      background: #145da0;
+    }
+
+    .cancel-btn {
+      background: #6c757d;
+    }
+
+    .cancel-btn:hover {
+      background: #5a6268;
+    }
+
+    .dark-mode .cancel-btn {
+      background: #6e7681;
+    }
+
+    .dark-mode .cancel-btn:hover {
+      background: #5c646d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #0d3b66;
+      color: white;
+    }
+
+    .dark-mode table {
+      background-color: #161b22;
+    }
+
+    .dark-mode th {
+      background-color: #1f6feb;
+    }
+
+    .dark-mode td {
+      color: #c9d1d9;
+    }
+
+    .action-btn {
+      margin: 0 4px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .edit {
+      background-color: #0077cc;
+    }
+
+    .edit:hover {
+      background-color: #005fa3;
+    }
+
+    .delete {
+      background-color: #d7263d;
+    }
+
+    .delete:hover {
+      background-color: #aa1e30;
+    }
+
+    .dark-mode .edit {
+      background-color: #3794ff;
+    }
+
+    .dark-mode .delete {
+      background-color: #f85149;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      display: none;
+    }
+
+    .loading-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .dark-mode .loading-content {
+      background-color: #161b22;
+      color: white;
+    }
+    .error-message {
+      color: #d7263d;
+      font-size: 12px;
+      margin-top: -8px;
+      display: none;
+    }
+    
+    .dark-mode .error-message {
+      color: #f85149;
+    }
+  </style>
+</head>
+<body>
+  <h1>Student Management</h1>
+
+  <div class="search-toggle-group">
+    <input type="text" id="search" placeholder="Search" />
+    <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <span id="loadingText">Processing...</span>
+    </div>
+  </div>
+
+  <div class="container-flex">
+    <div class="left-panel socket">
+      <form id="studentForm">
+        <input type="text" id="firstName" placeholder="First Name" required />
+        <input type="text" id="middleInitial" placeholder="Middle Initial" maxlength="1" />
+        <input type="text" id="lastName" placeholder="Last Name" required />
+        <input type="number" id="age" placeholder="Age" required />
+        <select id="section" required>
+          <option value="">Section</option>
+          <option value="1A">1A</option>
+          <option value="1B">1B</option>
+          <option value="1C">1C</option>
+          <option value="1D">1D</option>
+		  <option value="2A">2A</option>
+          <option value="2B">2B</option>
+          <option value="2C">2C</option>
+          <option value="2D">2D</option>
+		  <option value="2E">2E</option>
+          <option value="3A">3A</option>
+          <option value="3B">3B</option>
+          <option value="3C">3C</option>
+          <option value="3D">3D</option>
+          <option value="4A">4A</option>
+          <option value="4B">4B</option>
+          <option value="4C">4C</option>
+          <option value="4D">4D</option>
+        </select>
+        <input type="email" id="email" placeholder="Email" required />
+        <div id="emailError" class="error-message">This email is already in use by another student.</div>
+        <div class="form-buttons">
+          <button type="submit" id="submitBtn">
+            <span id="submitBtnText">Add Student</span>
+          </button>
+          <button type="button" id="cancelBtn" class="cancel-btn">Cancel</button>
+        </div>
+      </form>
+      <div class="socket-shadow"></div>
+    </div>
+
+    <div class="right-panel socket">
+      <h2>Student List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>First</th>
+            <th>M.I.</th>
+            <th>Last</th>
+            <th>Age</th>
+            <th>Section</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+      </table>
+      <div class="socket-shadow"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
+      updateDoc,
+      onSnapshot,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyATmkIGvse-bvBfK2PP0g7zSgIlcpsUBes",
+      authDomain: "jahcloud-878d7.firebaseapp.com",
+      projectId: "jahcloud-878d7",
+      storageBucket: "jahcloud-878d7.firebasestorage.app",
+      messagingSenderId: "309054914592",
+      appId: "1:309054914592:web:7d0dee1eade5a7a5657c45",
+      measurementId: "G-P9MW6HLN1M"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    const studentsCol = collection(db, "students");
+
+    const studentForm = document.getElementById("studentForm");
+    const studentTable = document.getElementById("studentTable");
+    const searchInput = document.getElementById("search");
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
+    const submitBtn = document.getElementById("submitBtn");
+    const submitBtnText = document.getElementById("submitBtnText");
+    const emailError = document.getElementById("emailError");
+
+    const firstNameInput = document.getElementById("firstName");
+    const middleInitialInput = document.getElementById("middleInitial");
+    const lastNameInput = document.getElementById("lastName");
+    const ageInput = document.getElementById("age");
+    const sectionInput = document.getElementById("section");
+    const emailInput = document.getElementById("email");
+
+    let studentData = [];
+    let editId = null;
+
+    // Show loading indicator
+    function showLoading(message = "Processing...") {
+      loadingText.textContent = message;
+      loadingOverlay.style.display = "flex";
+      document.body.style.pointerEvents = "none";
+    }
+
+    // Hide loading indicator
+    function hideLoading() {
+      loadingOverlay.style.display = "none";
+      document.body.style.pointerEvents = "auto";
+    }
+
+    // Function to check if email already exists
+    async function isEmailUnique(email, excludeId = null) {
+      const q = query(studentsCol, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) return true;
+      
+      // If we're editing, check if the email belongs to the student we're editing
+      if (excludeId) {
+        return querySnapshot.docs.every(doc => doc.id === excludeId);
+      }
+      
+      return false;
+    }
+
+    // Function to fetch students from Firestore
+    async function fetchStudents() {
+      showLoading("Loading students...");
+      try {
+        const snapshot = await getDocs(studentsCol);
+        studentData = [];
+        studentTable.innerHTML = "";
+        
+        snapshot.forEach((doc) => {
+          studentData.push({
+            id: doc.id,
+            firstName: doc.data().firstName,
+            middleInitial: doc.data().middleInitial,
+            lastName: doc.data().lastName,
+            age: doc.data().age,
+            section: doc.data().section,
+            email: doc.data().email
+          });
+        });
+        
+        displayStudents(studentData);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        alert("Failed to fetch students: " + error.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Function to display students in the table
+    function displayStudents(data) {
+      studentTable.innerHTML = "";
+      data.forEach((student) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${student.firstName}</td>
+          <td>${student.middleInitial}</td>
+          <td>${student.lastName}</td>
+          <td>${student.age}</td>
+          <td>${student.section}</td>
+          <td>${student.email}</td>
+          <td>
+            <button class="action-btn edit" data-id="${student.id}">✏️</button>
+            <button class="action-btn delete" data-id="${student.id}">🗑️</button>
+          </td>
+        `;
+        studentTable.appendChild(tr);
+      });
+    }
+
+    // Function to reset form
+    function resetForm() {
+      studentForm.reset();
+      editId = null;
+      submitBtnText.textContent = "Add Student";
+      submitBtn.disabled = false;
+      emailError.style.display = "none";
+      emailInput.style.borderColor = "#ccc";
+    }
+
+    // Add or Update student
+    studentForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const studentInfo = {
+        firstName: firstNameInput.value.trim(),
+        middleInitial: middleInitialInput.value.trim().toUpperCase(),
+        lastName: lastNameInput.value.trim(),
+        age: parseInt(ageInput.value),
+        section: sectionInput.value.trim(),
+        email: emailInput.value.trim()
+      };
+
+      // Validate inputs
+      if (!studentInfo.firstName || !studentInfo.lastName || isNaN(studentInfo.age) || 
+          !studentInfo.section || !studentInfo.email) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      // Check if email is valid
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(studentInfo.email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      // Check if email is unique (except when editing the same student)
+      const isUnique = await isEmailUnique(studentInfo.email, editId);
+      if (!isUnique) {
+        emailError.style.display = "block";
+        emailInput.style.borderColor = "#d7263d";
+        return;
+      }
+
+      // Disable submit button and show loading state
+      submitBtn.disabled = true;
+      submitBtnText.innerHTML = `<span class="spinner"></span>${editId ? "Updating..." : "Adding..."}`;
+      
+      try {
+        if (editId) {
+          // Update existing student
+          showLoading("Updating student...");
+          await updateDoc(doc(db, "students", editId), studentInfo);
+        } else {
+          // Add new student
+          showLoading("Adding student...");
+          await addDoc(studentsCol, studentInfo);
+        }
+        
+        // Reset form and refresh list
+        resetForm();
+        await fetchStudents();
+      } catch (error) {
+        console.error("Error saving student:", error);
+        alert("Failed to save student: " + error.message);
+      } finally {
+        hideLoading();
+        submitBtnText.textContent = editId ? "Update Student" : "Add Student";
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Cancel button handler
+    cancelBtn.addEventListener("click", resetForm);
+
+    // Handle edit and delete actions
+    studentTable.addEventListener("click", async (e) => {
+      const id = e.target.getAttribute("data-id");
+      
+      // Edit student
+      if (e.target.classList.contains("edit")) {
+        const student = studentData.find((s) => s.id === id);
+        if (!student) return;
+        
+        // Fill form with student data
+        firstNameInput.value = student.firstName;
+        middleInitialInput.value = student.middleInitial;
+        lastNameInput.value = student.lastName;
+        ageInput.value = student.age;
+        sectionInput.value = student.section;
+        emailInput.value = student.email;
+        
+        // Set edit mode
+        editId = id;
+        submitBtnText.textContent = "Update Student";
+        emailError.style.display = "none";
+        emailInput.style.borderColor = "#ccc";
+      }
+
+      // Delete student
+      if (e.target.classList.contains("delete")) {
+        if (confirm("Are you sure you want to delete this student?")) {
+          showLoading("Deleting student...");
+          try {
+            await deleteDoc(doc(db, "students", id));
+            
+            // If we're editing this student, reset the form
+            if (editId === id) {
+              resetForm();
+            }
+            
+            await fetchStudents();
+          } catch (error) {
+            console.error("Error deleting student:", error);
+            alert("Failed to delete student: " + error.message);
+          } finally {
+            hideLoading();
+          }
+        }
+      }
+    });
+
+    // Search functionality
+    searchInput.addEventListener("input", () => {
+      const keyword = searchInput.value.toLowerCase();
+      const filtered = studentData.filter((student) => {
+        const searchString = `${student.firstName} ${student.middleInitial} ${student.lastName} ${student.section} ${student.email}`.toLowerCase();
+        return searchString.includes(keyword);
+      });
+      displayStudents(filtered);
+    });
+
+    // Dark mode toggle
+    darkModeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      // Toggle between moon and sun icons
+      if (document.body.classList.contains("dark-mode")) {
+        darkModeToggle.textContent = "☀️";
+      } else {
+        darkModeToggle.textContent = "🌙";
+      }
+    });
+
+    // Email input validation
+    emailInput.addEventListener("input", async () => {
+      const email = emailInput.value.trim();
+      if (!email) return;
+      
+      // Only check for duplicates if we're not in edit mode or if the email has changed
+      if (!editId || (editId && email !== studentData.find(s => s.id === editId)?.email)) {
+        const isUnique = await isEmailUnique(email, editId);
+        if (!isUnique) {
+          emailError.style.display = "block";
+          emailInput.style.borderColor = "#d7263d";
+        } else {
+          emailError.style.display = "none";
+          emailInput.style.borderColor = "#ccc";
+        }
+      }
+    });
+
+    // Initialize the app
+    fetchStudents();
+  </script>
+</body>
+</html>
