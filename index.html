@@ -3,304 +3,364 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Management</title>
+  <title>Cloud University</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #e6ecf4;
-      color: #1e2a38;
-      padding: 20px;
-      transition: background 0.3s, color 0.3s;
-    }
+     body {
+    font-family: 'Times New Roman', Georgia, serif;
+    background: #e6ecf4;
+    color: #1e2a38;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+}
 
-    .dark-mode {
-      background: #0d1117;
-      color: #c9d1d9;
-    }
+.dark-mode {
+    background: #0d1117;
+    color: #c9d1d9;
+}
 
-    h1, h2 {
-      text-align: center;
-      color: #0d3b66;
-    }
+h1, h2 {
+    text-align: center;
+    color: #0d3b66;
+}
 
-    .dark-mode h1,
-    .dark-mode h2 {
-      color: #58a6ff;
-    }
+.dark-mode h1,
+.dark-mode h2 {
+    color: #58a6ff;
+}
 
-    .search-toggle-group {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 10px;
-    }
+/* ===== New top panel styles ===== */
+.top-panel {
+    background-color: #0d3b66;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    transition: background 0.3s;
+}
 
-    #search {
-      width: 200px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #99aabb;
-      transition: width 0.3s ease;
-      background: white;
-      color: #1e2a38;
-    }
+.dark-mode .top-panel {
+    background-color: #161b22;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
 
-    #search:focus {
-      width: 300px;
-      border-color: #0d3b66;
-      outline: none;
-    }
+.top-panel h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 36px;
+    text-shadow: none;
+    cursor: pointer;
+    transition: text-shadow 0.3s;
+}
 
-    .dark-mode #search {
-      background: #161b22;
-      border: 1px solid #30363d;
-      color: white;
-    }
+.top-panel h1:hover {
+    text-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff;
+}
 
-    #darkModeToggle {
-      margin-left: 10px;
-      padding: 10px 12px;
-      background-color: #0d3b66;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+/* ===== End of top panel styles ===== */
 
-    #darkModeToggle:hover {
-      background-color: #074173;
-      transform: scale(1.1);
-    }
+.search-toggle-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
 
-    .container-flex {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-      align-items: flex-start;
-    }
+#search {
+    width: 200px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #99aabb;
+    transition: width 0.3s ease;
+    background: white;
+    color: #1e2a38;
+    font-family: 'Times New Roman', Georgia, serif;
+}
 
-    .left-panel, .right-panel {
-      background: #f9fbff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+#search:focus {
+    width: 300px;
+    border-color: #0d3b66;
+    outline: none;
+}
 
-    .left-panel {
-      flex: 1;
-    }
+.dark-mode #search {
+    background: #161b22;
+    border: 1px solid #30363d;
+    color: white;
+}
 
-    .right-panel {
-      flex: 2;
-    }
+#darkModeToggle {
+    margin-left: 10px;
+    padding: 10px 12px;
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 8px rgba(13, 59, 102, 0.6);
+}
 
-    .dark-mode .left-panel,
-    .dark-mode .right-panel {
-      background-color: #161b22;
-      box-shadow: none;
-    }
+#darkModeToggle:hover {
+    background-color: #074173;
+    transform: scale(1.1);
+    box-shadow: 0 0 12px #58a6ff, 0 0 20px #58a6ff;
+}
 
-    .socket {
-      position: relative;
-      inset: 0;
-      background: linear-gradient(135deg, hsl(210, 40%, 90%), hsl(210, 40%, 30%));
-      box-shadow: -0.05em 0.1em 0.2em -0.2em white;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: box-shadow 0.3s ease;
-    }
+.container-flex {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
 
-    .socket-shadow {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      border-radius: inherit;
-      box-shadow: 0em 0.075em 0.1em 0em white;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
+.left-panel, .right-panel {
+    background: #f9fbff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
-    .socket:hover .socket-shadow {
-      opacity: 0.3;
-    }
+.left-panel {
+    flex: 1;
+}
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+.right-panel {
+    flex: 2;
+}
 
-    input, button, select {
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      transition: all 0.3s;
-    }
+.dark-mode .left-panel,
+.dark-mode .right-panel {
+    background-color: #161b22;
+    box-shadow: none;
+}
 
-    input:focus, select:focus {
-      border-color: #0d3b66;
-      outline: none;
-    }
+.socket {
+    position: relative;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(210, 40%, 90%), hsl(210, 40%, 30%));
+    box-shadow: -0.05em 0.1em 0.2em -0.2em white;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
 
-    .dark-mode input, .dark-mode select {
-      background-color: #0d1117;
-      color: #c9d1d9;
-      border-color: #444c56;
-    }
+.socket-shadow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    border-radius: inherit;
+    box-shadow: 0em 0.075em 0.1em 0em white;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-    button {
-      background: #0d3b66;
-      color: white;
-      border: none;
-      cursor: pointer;
-      position: relative;
-    }
+.socket:hover .socket-shadow {
+    opacity: 0.3;
+}
 
-    button:hover {
-      background: #145da0;
-    }
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    .cancel-btn {
-      background: #6c757d;
-    }
+input, button, select {
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: all 0.3s;
+    font-family: 'Times New Roman', Georgia, serif;
+}
 
-    .cancel-btn:hover {
-      background: #5a6268;
-    }
+input:focus, select:focus {
+    border-color: #0d3b66;
+    outline: none;
+}
 
-    .dark-mode .cancel-btn {
-      background: #6e7681;
-    }
+.dark-mode input, .dark-mode select {
+    background-color: #0d1117;
+    color: #c9d1d9;
+    border-color: #444c56;
+}
 
-    .dark-mode .cancel-btn:hover {
-      background: #5c646d;
-    }
+button {
+    background: #0d3b66;
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    box-shadow: 0 0 10px rgba(13, 59, 102, 0.3);
+    animation: none;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-    }
+button:hover {
+    background: #145da0;
+    box-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff, 0 0 30px #58a6ff;
+    animation: glow 1s infinite alternate;
+}
 
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ddd;
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff;
     }
+    to {
+        box-shadow: 0 0 20px #58a6ff, 0 0 30px #58a6ff, 0 0 40px #58a6ff;
+    }
+}
 
-    th {
-      background-color: #0d3b66;
-      color: white;
-    }
+.cancel-btn {
+    background: #6c757d;
+}
 
-    .dark-mode table {
-      background-color: #161b22;
-    }
+.cancel-btn:hover {
+    background: #5a6268;
+    box-shadow: 0 0 10px #d0d0d0, 0 0 20px #ffffff;
+}
 
-    .dark-mode th {
-      background-color: #1f6feb;
-    }
+.dark-mode .cancel-btn {
+    background: #6e7681;
+}
 
-    .dark-mode td {
-      color: #c9d1d9;
-    }
+.dark-mode .cancel-btn:hover {
+    background: #5c646d;
+    box-shadow: 0 0 10px #bbbbbb, 0 0 20px #999999;
+}
 
-    .action-btn {
-      margin: 0 4px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Times New Roman', Georgia, serif;
+}
 
-    .edit {
-      background-color: #0077cc;
-    }
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
 
-    .edit:hover {
-      background-color: #005fa3;
-    }
+th {
+    background-color: #0d3b66;
+    color: white;
+}
 
-    .delete {
-      background-color: #d7263d;
-    }
+.dark-mode table {
+    background-color: #161b22;
+}
 
-    .delete:hover {
-      background-color: #aa1e30;
-    }
+.dark-mode th {
+    background-color: #1f6feb;
+}
 
-    .dark-mode .edit {
-      background-color: #3794ff;
-    }
+.dark-mode td {
+    color: #c9d1d9;
+}
 
-    .dark-mode .delete {
-      background-color: #f85149;
-    }
+.action-btn {
+    margin: 0 4px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, box-shadow 0.3s;
+    font-family: 'Times New Roman', Georgia, serif;
+}
 
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
+.edit {
+    background-color: #0077cc;
+}
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+.edit:hover {
+    background-color: #005fa3;
+    box-shadow: 0 0 10px #70c0ff, 0 0 20px #70c0ff;
+}
 
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      display: none;
-    }
+.delete {
+    background-color: #d7263d;
+}
 
-    .loading-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
+.delete:hover {
+    background-color: #aa1e30;
+    box-shadow: 0 0 10px #ff6b81, 0 0 20px #ff6b81;
+}
 
-    .dark-mode .loading-content {
-      background-color: #161b22;
-      color: white;
-    }
-    .error-message {
-      color: #d7263d;
-      font-size: 12px;
-      margin-top: -8px;
-      display: none;
-    }
-    
-    .dark-mode .error-message {
-      color: #f85149;
-    }
+.dark-mode .edit {
+    background-color: #3794ff;
+}
+
+.dark-mode .delete {
+    background-color: #f85149;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none;
+}
+
+.loading-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Times New Roman', Georgia, serif;
+}
+
+.dark-mode .loading-content {
+    background-color: #161b22;
+    color: white;
+}
+
+.error-message {
+    color: #d7263d;
+    font-size: 12px;
+    margin-top: -8px;
+    display: none;
+}
+
+.dark-mode .error-message {
+    color: #f85149;
+}
+
   </style>
 </head>
 <body>
-  <h1>Student Management</h1>
+  <div class="top-panel">
+  <h1>CLOUD UNIVERSITY</h1>
+  </div>
 
   <div class="search-toggle-group">
     <input type="text" id="search" placeholder="Search" />
